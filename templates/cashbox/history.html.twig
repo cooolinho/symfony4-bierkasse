@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cashbox{% endblock %}
+
+{% block body %}
+    <h1>
+        {{ cashbox.name }}
+        <small>Historie</small>
+    </h1>
+
+    <div class="row">
+        <div class="col">
+            <h3>Bier</h3>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th class="text-left">Nr</th>
+                    <th>Datum</th>
+                    <th>Spieler</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for beer in cashbox.beers|reverse %}
+                    <tr class="beer" data-beer-id="{{ beer.id }}">
+                        <td class="text-left">#{{ loop.revindex }}</td>
+                        <td>
+                            {{ beer.createdAt|date('d. F Y') }} um {{ beer.createdAt|date('H:i') }} Uhr
+                        </td>
+                        <td>
+                            {{ beer.player.fullname }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col">
+            <h3>Einzahlung</h3>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th class="text-left">Nr</th>
+                    <th>Datum</th>
+                    <th>Einzahlung</th>
+                    <th>Spieler</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for payment in cashbox.payments|reverse %}
+                    <tr class="beer" data-payment-id="{{ payment.id }}">
+                        <td class="text-left">#{{ loop.revindex }}</td>
+                        <td>
+                            {{ payment.createdAt|date('d. F Y') }} um {{ payment.createdAt|date('H:i') }} Uhr
+                        </td>
+                        <td>
+                            {{ payment.amount }} &euro;
+                        </td>
+                        <td>
+                            {{ payment.player.fullname }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <a href="{{ path('cashbox_show', {'id': cashbox.id}) }}">zurück</a>
+{% endblock %}

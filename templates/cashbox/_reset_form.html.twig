@@ -1,0 +1,5 @@
+<form method="post" action="{{ path('cashbox_reset', {'id': cashbox.id}) }}" onsubmit="return confirm('Are you sure you want to reset this item?');">
+    <input type="hidden" name="_method" value="RESET">
+    <input type="hidden" name="_token" value="{{ csrf_token('reset' ~ cashbox.id) }}">
+    <button class="btn">Reset</button>
+</form>

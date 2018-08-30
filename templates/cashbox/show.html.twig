@@ -1,0 +1,130 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cashbox{% endblock %}
+
+{% block body %}
+    <h1>
+        {{ cashbox.name }}
+        {% if cashbox.balance > 0 %}
+            <span class="badge badge-success">
+                {{ cashbox.balance }}
+            </span>
+        {% elseif cashbox.balance < 0 %}
+            <span class="badge badge-danger">
+                {{ cashbox.balance }}
+            </span>
+        {% else %}
+            <span class="badge badge-warning">
+                {{ cashbox.balance }}
+            </span>
+        {% endif %}
+    </h1>
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <table class="table table-striped" id="cashbox">
+                    <thead>
+                    <tr>
+                        <th class="text-left">Spieler</th>
+                        <th>Bier</th>
+                        <th>Einzahlung</th>
+                        <th>Nicht bezahlt</th>
+                        <th>Bezahlt</th>
+                        <th>-/+</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for player in cashbox.players %}
+                        <tr class="player" data-player-id="{{ player.id }}">
+                            <td class="text-left">
+                                <a href="{{ path('cashbox_player_history', {'id': cashbox.id, 'player': player.id}) }}">
+                                    {{ player.fullname }}
+                                </a>
+                            </td>
+                            <td class="min">
+                                <button class="btn btn-warning action beer" data-action="beer">
+                                    <i class="fas fa-beer"></i>
+                                </button>
+                            </td>
+                            <td class="min">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" value="1" id="paymentAmount">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-success action payment" data-action="payment">
+                                            <i class="fas fa-dollar-sign"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="min">
+                                {{ player.beerAmount }}
+                            </td>
+                            <td class="min">
+                                {{ player.paymentAmount }}
+                            </td>
+                            <td class="min">
+                                {% if player.balance > 0 %}
+                                    <span class="badge badge-success">
+                            {{ player.balance }}
+                        </span>
+                                {% elseif player.balance < 0 %}
+                                    <span class="badge badge-danger">
+                            {{ player.balance }}
+                        </span>
+                                {% else %}
+                                    <span class="badge badge-warning">
+                            {{ player.balance }}
+                        </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <a href="{{ path('cashbox_index') }}">back to list</a>
+
+    <a href="{{ path('cashbox_edit', {'id': cashbox.id}) }}">edit</a>
+
+    <a href="{{ path('cashbox_history', {'id': cashbox.id}) }}">Historie</a>
+{% endblock %}
+
+{% block javascripts_inline %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.btn[data-action]').click(function (event) {
+                var player = $(this).closest('.player').data('player-id');
+                var action = $(this).data('action');
+                var amount = 1;
+
+                if (action === 'payment') {
+                    amount = $(this).closest('.input-group').find('input').val();
+                }
+
+                $.ajax({
+                    method: "POST",
+                    url: "{{ path('cashbox_action') }}",
+                    data: {
+                        cashbox: {{ cashbox.id }},
+                        player: player,
+                        action: action,
+                        amount: amount
+                    }
+                })
+                    .done(function (msg) {
+                        location.reload();
+                    });
+
+            })
+        });
+    </script>
+{% endblock %}

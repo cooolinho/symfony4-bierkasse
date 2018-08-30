@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cashbox index{% endblock %}
+
+{% block body %}
+    <h1>Cashbox index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for cashbox in cashboxes %}
+            <tr>
+                <td>{{ cashbox.id }}</td>
+                <td>{{ cashbox.name }}</td>
+                <td>{{ cashbox.balance }}</td>
+                <td>
+                    <a href="{{ path('cashbox_show', {'id': cashbox.id}) }}">show</a>
+                    <a href="{{ path('cashbox_edit', {'id': cashbox.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="2">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('cashbox_new') }}">Create new</a>
+{% endblock %}

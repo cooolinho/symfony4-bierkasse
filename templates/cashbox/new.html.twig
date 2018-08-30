@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Cashbox{% endblock %}
+
+{% block body %}
+    <h1>Create new Cashbox</h1>
+
+    {{ include('cashbox/_form.html.twig') }}
+
+    <a href="{{ path('cashbox_index') }}">back to list</a>
+{% endblock %}
